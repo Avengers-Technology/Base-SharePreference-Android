@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import com.example.basesharepreference.model.Users
 import com.google.gson.Gson
 import java.util.*
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 
 class PreferManager private constructor(context: Context) {
@@ -87,6 +89,22 @@ class PreferManager private constructor(context: Context) {
     }
 
     // write List<Object>
+    // https://stackoverflow.com/questions/28107647/how-to-save-listobject-to-sharedpreferences (58 vote)
+     fun <T> writeListObject(key: String?, list: List<T>?) {
+        val gson = Gson()
+        val json = gson.toJson(list)
+        write(key, json)
+    }
 
-
+    // read List<Object>
+     fun readListObject(key: String?): List<Users> {
+        var listUser: List<Users> = emptyList()
+        val serializedObject = sharedPreferences!!.getString(key, null)
+        if (serializedObject != null) {
+            val gson = Gson()
+            val type: Type = object : TypeToken<List<Users>>() {}.type
+            listUser = gson.fromJson(serializedObject, type)
+        }
+        return listUser
+    }
 }

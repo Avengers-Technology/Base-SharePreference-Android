@@ -7,6 +7,7 @@ import com.example.basesharepreference.model.Users
 import com.google.gson.Gson
 
 class MainAct : AppCompatActivity() {
+    private val keyListObject: String = "keyListObject"
     private val keyObject: String = "keyObject"
     private val keyBoolean: String = "keyBoolean"
     private val keyFloat: String = "keyLong"
@@ -52,6 +53,13 @@ class MainAct : AppCompatActivity() {
         Log.e("Logger",objectUser.name+"->"+preferManager.readString(keyObject,""))
 
         // Save + Read type List<Object>
+        val listUser = mutableListOf<Users>()
+        listUser.add(Users("HiepPD",17))
+        listUser.add(Users("LienNP",29))
 
+        preferManager.writeListObject(keyListObject,listUser)
+
+        val resultListUser = preferManager.readListObject(keyListObject)
+        Log.e("Logger", resultListUser[0].name+"/"+resultListUser[1].name)
     }
 }

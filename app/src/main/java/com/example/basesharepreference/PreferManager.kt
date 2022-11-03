@@ -2,6 +2,9 @@ package com.example.basesharepreference
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.basesharepreference.model.Users
+import com.google.gson.Gson
+import java.util.*
 
 
 class PreferManager private constructor(context: Context) {
@@ -41,6 +44,16 @@ class PreferManager private constructor(context: Context) {
         prefsEditor.apply()
     }
 
+    fun write(key: String?, users: Users){
+        val prefsEditor = sharedPreferences!!.edit()
+        val gson = Gson()
+        val dataJson = gson.toJson(users)
+        prefsEditor.putString(key, dataJson)
+        prefsEditor.apply()
+    }
+
+
+
     fun readString(key: String?, defValue: String?): String? {
         return if (sharedPreferences != null) {
             sharedPreferences.getString(key, defValue)
@@ -58,6 +71,8 @@ class PreferManager private constructor(context: Context) {
     fun readBoolean(key: String?, defValue: Boolean ): Boolean {
         return sharedPreferences?.getBoolean(key, defValue) ?: defValue
     }
+
+
 
 
 }

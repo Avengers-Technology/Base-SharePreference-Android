@@ -20,6 +20,7 @@ class PreferManager private constructor(context: Context) {
         }
     }
 
+    // write String + Int + Float + Boolean
     fun write(key: String?, value: String?) {
         val prefsEditor = sharedPreferences!!.edit()
         prefsEditor.putString(key, value)
@@ -44,16 +45,7 @@ class PreferManager private constructor(context: Context) {
         prefsEditor.apply()
     }
 
-    fun write(key: String?, users: Users){
-        val prefsEditor = sharedPreferences!!.edit()
-        val gson = Gson()
-        val dataJson = gson.toJson(users)
-        prefsEditor.putString(key, dataJson)
-        prefsEditor.apply()
-    }
-
-
-
+    // read String + Int + Float + Boolean
     fun readString(key: String?, defValue: String?): String? {
         return if (sharedPreferences != null) {
             sharedPreferences.getString(key, defValue)
@@ -72,7 +64,29 @@ class PreferManager private constructor(context: Context) {
         return sharedPreferences?.getBoolean(key, defValue) ?: defValue
     }
 
+    // clear all data
+    fun clearAllData(){
+        val prefsEditor = sharedPreferences!!.edit()
+        prefsEditor.clear().apply()
+    }
 
+    // remove data
+    fun removeData(key: String?){
+        val prefsEditor = sharedPreferences!!.edit()
+        prefsEditor.remove(key).apply()
+    }
+
+
+    // write Object
+    fun write(key: String?, users: Users){
+        val prefsEditor = sharedPreferences!!.edit()
+        val gson = Gson()
+        val dataJson = gson.toJson(users)
+        prefsEditor.putString(key, dataJson)
+        prefsEditor.apply()
+    }
+
+    // write List<Object>
 
 
 }

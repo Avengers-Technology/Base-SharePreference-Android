@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.basesharepreference.model.Users
 import com.google.gson.Gson
-import java.util.*
 
 class MainAct : AppCompatActivity() {
     private val keyObject: String = "keyObject"
@@ -20,21 +19,16 @@ class MainAct : AppCompatActivity() {
 
         baseSharePrefer()
 
-
-
-
     }
 
     private fun baseSharePrefer() {
         val preferManager = PreferManager.getInstance(this)
 
-        val user = Users("Smeb",25)
-
+        // Save + Read type Int, Float, Boolean, String
         preferManager?.write(keyString,"Manchester United")
         preferManager?.write(keyInt,1997)
         preferManager?.write(keyFloat,123.3f)
         preferManager?.write(keyBoolean,true)
-        preferManager?.write(keyObject,user)
 
         val dataInt = preferManager!!.readInt(keyInt,0)
         Log.e("Logger",dataInt.toString())
@@ -48,8 +42,16 @@ class MainAct : AppCompatActivity() {
         val dataString = preferManager.readString(keyString,"")
         Log.e("Logger",dataString.toString())
 
+
+        // Save + Read type Object
+        val user = Users("Smeb",25)
+        preferManager.write(keyObject,user)
+
         val gson = Gson()
         val objectUser = gson.fromJson(preferManager.readString(keyObject,""),Users::class.java)
-        Log.e("Logger",objectUser.name)
+        Log.e("Logger",objectUser.name+"->"+preferManager.readString(keyObject,""))
+
+        // Save + Read type List<Object>
+
     }
 }

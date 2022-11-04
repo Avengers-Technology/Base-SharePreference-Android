@@ -45,12 +45,11 @@ class MainAct : AppCompatActivity() {
 
 
         // Save + Read type Object
-        val user = Users("Smeb",25)
-        preferManager.write(keyObject,user)
+        val user = Users("Smeb",26)
+        preferManager.writeObject(keyObject,user)
 
-        val gson = Gson()
-        val objectUser = gson.fromJson(preferManager.readString(keyObject,""),Users::class.java)
-        Log.e("Logger",objectUser.name+"->"+preferManager.readString(keyObject,""))
+        val objectUser = preferManager.readObject(keyObject, Users::class.java ) as Users
+        Log.e("Logger",objectUser.name+"->"+objectUser.age)
 
         // Save + Read type List<Object>
         val listUser = mutableListOf<Users>()
@@ -59,7 +58,7 @@ class MainAct : AppCompatActivity() {
 
         preferManager.writeListObject(keyListObject,listUser)
 
-        val resultListUser = preferManager.readListObject(keyListObject)
+        val resultListUser = preferManager.readListObject(keyListObject, Users::class.java)
         Log.e("Logger", resultListUser[0].name+"/"+resultListUser[1].name)
     }
 }

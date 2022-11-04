@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.basesharepreference.model.Users
 import com.google.gson.Gson
-import java.util.*
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
@@ -66,26 +65,22 @@ class PreferManager private constructor(context: Context) {
         return sharedPreferences?.getBoolean(key, defValue) ?: defValue
     }
 
-    // clear all data
-    fun clearAllData(){
-        val prefsEditor = sharedPreferences!!.edit()
-        prefsEditor.clear().apply()
-    }
-
-    // remove data
-    fun removeData(key: String?){
-        val prefsEditor = sharedPreferences!!.edit()
-        prefsEditor.remove(key).apply()
-    }
-
 
     // write Object
-    fun write(key: String?, users: Users){
+    // https://stackoverflow.com/questions/7145606/how-do-you-save-store-objects-in-sharedpreferences-on-android (20 vote)
+    fun writeObject(key: String?, any: Any){
         val prefsEditor = sharedPreferences!!.edit()
         val gson = Gson()
-        val dataJson = gson.toJson(users)
+        val dataJson = gson.toJson(any)
         prefsEditor.putString(key, dataJson)
         prefsEditor.apply()
+    }
+
+    // read Object
+    fun <T : Any> readObject(key: String?, classOfT: Class<T> ): Any {
+        val gson = Gson()
+        val any = preferManager!!.readString(key, "")
+        return gson.fromJson(any, classOfT)
     }
 
     // write List<Object>
@@ -97,14 +92,26 @@ class PreferManager private constructor(context: Context) {
     }
 
     // read List<Object>
-     fun readListObject(key: String?): List<Users> {
-        var listUser: List<Users> = emptyList()
+     fun <T : Any> readListObject(key: String?, classOfT: Class<T>): List<T> {
+        var listUser: List<T> = emptyList()
         val serializedObject = sharedPreferences!!.getString(key, null)
         if (serializedObject != null) {
             val gson = Gson()
-            val type: Type = object : TypeToken<List<Users>>() {}.type
+            val type: Type = object : TypeToken<List<T>>() {}.type
             listUser = gson.fromJson(serializedObject, type)
         }
         return listUser
+    }
+
+    // clear all data
+    fun clearAllData(){
+        val prefsEditor = sharedPreferences!!.edit()
+        prefsEditor.clear().apply()
+    }
+
+    // remove data
+    fun removeData(key: String?){
+        val prefsEditor = sharedPreferences!!.edit()
+        prefsEditor.remove(key).apply()
     }
 }

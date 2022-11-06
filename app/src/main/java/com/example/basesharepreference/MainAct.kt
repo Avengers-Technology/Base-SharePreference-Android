@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.basesharepreference.model.Users
-import com.google.gson.Gson
 
 class MainAct : AppCompatActivity() {
     private val keyListObject: String = "keyListObject"
@@ -56,9 +55,11 @@ class MainAct : AppCompatActivity() {
         listUser.add(Users("HiepPD",17))
         listUser.add(Users("LienNP",29))
 
+
         preferManager.writeListObject(keyListObject,listUser)
 
-        val resultListUser = preferManager.readListObject(keyListObject, Users::class.java)
+        val resultListUser = preferManager.readListObject(keyListObject, Users::class)
+        Log.e("Logger", "resultListUser : $resultListUser")
         Log.e("Logger", resultListUser[0].name+"/"+resultListUser[1].name)
     }
 }

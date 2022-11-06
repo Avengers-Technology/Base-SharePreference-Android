@@ -2,10 +2,11 @@ package com.example.basesharepreference
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.basesharepreference.model.Users
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.Serializable
 import java.lang.reflect.Type
+import kotlin.reflect.KClass
 
 
 class PreferManager private constructor(context: Context) {
@@ -65,7 +66,6 @@ class PreferManager private constructor(context: Context) {
         return sharedPreferences?.getBoolean(key, defValue) ?: defValue
     }
 
-
     // write Object
     // https://stackoverflow.com/questions/7145606/how-do-you-save-store-objects-in-sharedpreferences-on-android (20 vote)
     fun writeObject(key: String?, any: Any){
@@ -85,22 +85,21 @@ class PreferManager private constructor(context: Context) {
 
     // write List<Object>
     // https://stackoverflow.com/questions/28107647/how-to-save-listobject-to-sharedpreferences (58 vote)
-     fun <T> writeListObject(key: String?, list: List<T>?) {
+    fun <T> writeListObject(key: String?, list: List<T>?) {
         val gson = Gson()
         val json = gson.toJson(list)
         write(key, json)
     }
 
     // read List<Object>
-     fun <T : Any> readListObject(key: String?, classOfT: Class<T>): List<T> {
-        var listUser: List<T> = emptyList()
-        val serializedObject = sharedPreferences!!.getString(key, null)
-        if (serializedObject != null) {
+    // https://stackoverflow.com/questions/28107647/how-to-save-listobject-to-sharedpreferences (0 vote, index : end)
+    fun <T : Serializable> readListObject(key: String, clazz: KClass<T>): List<T> {
+        return sharedPreferences.let { prefs ->
             val gson = Gson()
-            val type: Type = object : TypeToken<List<T>>() {}.type
-            listUser = gson.fromJson(serializedObject, type)
+            val data = prefs!!.getString(key, null)
+            val type: Type = TypeToken.getParameterized(MutableList::class.java, clazz.java).type
+            gson.fromJson(data, type) as MutableList<T>
         }
-        return listUser
     }
 
     // clear all data
